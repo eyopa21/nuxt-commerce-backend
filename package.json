@@ -1,0 +1,43 @@
+{
+  "name": "glitch-hello-node",
+  "version": "0.1.0",
+  "description": "A simple Node app built on fastify, instantly up and running. Built to be remixed on Glitch.com.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "nodemon -r esm server.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "body-parser": "1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "4.16.4",
+    "fastify": "^4.11.0",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.0.0",
+    "imgbb-uploader": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "node-fetch": "2.6.0",
+    "nodemailer": "^6.8.0",
+    "request": "^2.88.2",
+    "cloudinary": "^1.41.0",
+    "esm": "^3.2.25"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25",
+    "nodemon": "1.18.4"
+  },
+  "engines": {
+    "esm": "^3.2.25",
+    "node": "14.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/glitch-hello-node"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch"
+  ]
+}
