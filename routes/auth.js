@@ -8,9 +8,9 @@ const {
     forgotPassword
 } = require('../controllers/auth/user')
 
-router.route('/login').post(login)
-router.route('/signup').post(signUp)
-router.route('/verify').post(verify)
+router.route('/user/login').post(login)
+router.route('/user/signup').post(signUp)
+router.route('/user/verify').post(verify)
 router.route('/forgotpassword').post(forgotPassword)
 router.route('/changepassword').post(changePassword)
 
