@@ -2,7 +2,7 @@ const { request, gql, GraphQLClient } = require("graphql-request");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
-const { sendEmail } = require('./sendMessage')
+const { sendEmail } = require('../sendMessage')
 dotenv.config();
 const client = new GraphQLClient(process.env.HASURA_URI, {
     headers: {
@@ -40,7 +40,7 @@ password
                 };
                 jwt.sign(
                     tokenContents,
-                    process.env.JWT_SECRET, { expiresIn: '1hr' }, (err, token) => {
+                    process.env.JWT_SECRET, (err, token) => {
                         if (err) {
                             res.sendStatus(403)
                         } else {
@@ -77,6 +77,14 @@ exports.signUp = async(req, res, next) => {
 
 
 `;
+  const ADD_BILLING_QUERY = `
+  mutation ($user_id: uuid!) {
+  insert_billing_and_shipping_addresses_one(object: {address1: "", address2: "", city: "", company_name: "", country: "", kebele: "", sub_city: "", zip_code: 10, user_id: $user_id}) {
+    id
+  }
+}
+
+  `
     const {
         email,
         password,
@@ -96,11 +104,14 @@ exports.signUp = async(req, res, next) => {
             last_name,
             user_name,
             phone_number,
-            code,
+            verification_code:code,
             
         })
 
         if (data.insert_users_one) {
+          await client.request(ADD_BILLING_QUERY, {
+            user_id: data.insert_users_one.id
+          })
             const tokenContents = {
                 sub: 'user',
                 email: data.insert_users_one.email,
@@ -149,8 +160,8 @@ exports.signUp = async(req, res, next) => {
 
 exports.verify = async(req, res, next) => {
     const HASURA_OPERATION = `
-mutation ($id: uuid!, $code: String!) {
-  update_users(where: {id: {_eq: $id}, _and: {code: {_eq: $code}}}, _set: {is_verified: true}) {
+mutation ($id: uuid!, $verification_code: String!) {
+  update_users(where: {id: {_eq: $id}, _and: {verification_code: {_eq: $verification_code}}}, _set: {is_verified: true}) {
     returning {
       id
       email
@@ -162,13 +173,18 @@ mutation ($id: uuid!, $code: String!) {
 `;
     const { id, code } = req.body.input;
     try {
-        const data = await client.request(HASURA_OPERATION, { id, code })
+        const data = await client.request(HASURA_OPERATION, { id, verification_code:code })
         console.log(data)
         if (data.update_users.returning[0]) {
-
-            res.json({
+ sendEmail( data.update_users.returning[0].email, "Thank you", 'You are successfully verified').then((email) => {
+                           
+                            res.json({
                 ...data.update_users.returning[0]
             })
+                        }).catch(err => {
+                            return res.status(400).json({ message: 'Email sending falied' });
+                        })
+            
         } else {
             return res.status(400).json({ message: 'Cannot verify please try again' });
         }

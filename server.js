@@ -26,18 +26,20 @@ app.use(bodyParser.urlencoded({
 
 
 
-const general = require('./routes/general')
+
 const image = require('./routes/image')
 const auth = require('./routes/auth')
 const guest = require('./routes/guest')
 const sendMessage = require('./routes/sendMessage')
 const logs = require('./routes/logs')
-app.use('/api/v1/general', general);
+const cart = require('./routes/cart')
+
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/image', image);
 app.use('/api/v1/guest', guest);
 app.use('/api/v1/email', sendMessage);
 app.use('/api/v1/logs', logs);
+app.use('/api/v1/cart', cart);
 
 
 
