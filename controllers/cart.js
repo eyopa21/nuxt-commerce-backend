@@ -84,3 +84,49 @@ exports.addToCart = async(req, res, next) => {
   
   
 }
+
+
+
+exports.order = async(req, res) => {
+  const HASURA_OPERATION = `
+mutation($user_id: uuid!, $tax: numeric!, $subtotal: numeric!, $status: String!, $shipping: numeric!, $products: jsonb!, $payment_method: String!, $billing_id: uuid!, $total: numeric!, $note: String) {
+  insert_orders_one(object: {user_id: $user_id, tax: $tax, subtotal: $subtotal, status: $status, shipping: $shipping, products: $products, payment_method: $payment_method, billing_id: $billing_id, total: $total, note: $note}) {
+    id
+  }
+}
+`;
+  
+  const { user_id, subtotal, products, payment_method, billing_id, note } = req.body.input;
+  let total = 0;
+     products?.forEach(item => {
+        // console.log("itemmm", item.quantity*item.product.price)
+       total+=item.quantity*item.product.price
+     })
+  
+  try{
+    
+     const data = await client.request(HASURA_OPERATION, {
+          user_id, tax:(total*15)/100, subtotal:total, status: "pending", shipping:500, products, payment_method,billing_id, note, total:total+500+(total*15/100)
+            
+        })
+     
+     if(data.insert_orders_one){
+       res.json({
+                    ...data.insert_orders_one
+          })
+     }
+    else {
+          
+            return res.status(400).json({ message: 'Ordering failed' });
+          }
+    
+          
+    
+    
+  }catch(error) {
+    console.log("ordor error", error)
+    return res.status(400).json({ message: 'Ordering failed' });
+  }
+  
+  
+}

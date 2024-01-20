@@ -66,7 +66,7 @@ password
 }
 
 exports.signUp = async(req, res, next) => {
-
+console.log("signup")
     const HASURA_OPERATION = `mutation ($email: String!, $password: String!, $first_name: String!, $last_name: String!, $phone_number: String!, $user_name: String!, $verification_code: String!) {
   insert_users_one(object: {email: $email, password: $password, first_name: $first_name, last_name: $last_name, phone_number: $phone_number, user_name: $user_name, verification_code: $verification_code}) {
     id
@@ -79,7 +79,7 @@ exports.signUp = async(req, res, next) => {
 `;
   const ADD_BILLING_QUERY = `
   mutation ($user_id: uuid!) {
-  insert_billing_and_shipping_addresses_one(object: {address1: "", address2: "", city: "", company_name: "", country: "", kebele: "", sub_city: "", zip_code: 10, user_id: $user_id}) {
+  insert_billing_and_shipping_addresses_one(object: {address1: "", address2: "", city: "", company_name: "", country: "", kebele: "", sub_city: "", zip_code: 0, user_id: $user_id}) {
     id
   }
 }
