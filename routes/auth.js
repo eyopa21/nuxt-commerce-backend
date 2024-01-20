@@ -11,8 +11,8 @@ const {
 router.route('/user/login').post(login)
 router.route('/user/signup').post(signUp)
 router.route('/user/verify').post(verify)
-router.route('/forgotpassword').post(forgotPassword)
-router.route('/changepassword').post(changePassword)
+router.route('/user/forgotpassword').post(forgotPassword)
+router.route('/user/changepassword').post(changePassword)
 
 //router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp)
 
